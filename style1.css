@@ -1,0 +1,34 @@
+body{
+	margin: 0;
+	padding: 0;
+	font-family: Georgia;
+	color: white;
+	width: 350px;
+	text-align: center;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 40%;
+	left: 50%;
+	background: url(njit4.jpg) no-repeat;
+	background-size: 1920px 940px;
+}
+body h1{
+	float:left;
+	font-size:40px;
+	padding: 10px;
+	border-bottom:7px solid #f44336;
+	margin-bottom: 55px;
+}
+.form-btn1{
+	float: center;
+	border: 0;
+	background: red;
+	color: white;
+	padding: 10px 50px;
+	border-radius: 20px;
+	cursor: pointer;
+	transition: 0.5s;
+}
+.form-btn1:hover{
+	background: #CD5C5C;
+}
