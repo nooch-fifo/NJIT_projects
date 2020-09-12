@@ -1,0 +1,249 @@
+<?php
+session_start();
+
+
+$fe_user = $_POST['user_id']; 
+$fe_pass = $_POST['password'];
+$fe_func_name  = $_POST['func'];
+$fe_arguments  = $_POST['args'];
+$fe_operations = $_POST['ops'];
+$fe_difficulty = $_POST['difficulty'];
+$fe_topic = $_POST['topic'];
+$fe_args = $_POST['args_array'];
+$fe_test_cases = $_POST['test_cases'];
+$fe_case_solution = $_POST['case_solution'];
+$fe_exam_ids = $_POST['exam_ids'];
+$fe_exam_points = $_POST['exam_points'];
+$fe_function_name = $_POST['function_name'];
+$fe_cases = $_POST['cases'];
+$fe_test_solutions = $_POST['test_solutions'];
+$fe_answer_id = $_POST['answer_id'];
+$fe_array_ans = array();
+$fe_forloop = $_POST['forloop'];
+$fe_prints = $_POST['prints'];
+$fe_topic_array = $_POST['topic_array'];
+$fe_difficulty_array = $_POST['difficulty_array'];
+$fe_constraints_array = $_POST['constraints_array'];
+$fe_man1 = $_POST['man1'];
+$fe_man2 = $_POST['man2'];
+$fe_man3 = $_POST['man3'];
+$fe_man4 = $_POST['man4'];
+$fe_man5 = $_POST['man5'];
+$fe_com = $_POST['com'];
+$fe_num_args = $_POST['num_args'];
+
+
+//echo urlencode($fe_answer_id);
+//echo $fe_answer_id;
+//echo $fe_function_name;
+
+//foreach($_POST['answer_id'] as $i){
+	//echo $i; 
+//}
+
+
+foreach($_POST['answer_id'] as $i){
+	$ans = urlencode($i);
+	echo urlencode($i); 
+	array_push($fe_array_ans, $ans);
+}
+/*
+foreach($fe_constraints_array as $i){
+	echo $i;	
+}
+
+*/
+
+/*
+foreach($_POST["test_solutions"] as $i){
+	echo $i; 
+}
+*/
+
+
+
+
+
+// where are we posting to?
+$url = 'https://afsaccess1.njit.edu/~mjg77/Galietti_Controller.php';
+
+$fields = array(
+   'user_id' => $fe_user,
+   'password' => $fe_pass,
+   'func' => $fe_func_name,
+   'args' => $fe_arguments,
+   'ops'  => $fe_operations,
+   'difficulty' => $fe_difficulty,
+   'topic' => $fe_topic,
+   'args_array' => $fe_args,
+   'test_cases' => $fe_test_cases,
+   'case_solution' => $fe_case_solution,
+   'exam_ids' => $fe_exam_ids,
+   'exam_points' => $fe_exam_points,
+   'function_name' => $fe_function_name,
+   'cases' => $fe_cases,
+   'test_solutions' => $fe_test_solutions,
+   'answer_id' => $fe_answer_id,
+   'array_ans' => $fe_array_ans,
+   'forloop' => $fe_forloop,
+   'prints' => $fe_prints,
+   'topic_array' => $fe_topic_array,
+   'difficulty_array' => $fe_difficulty_array,
+   'constraints_array' => $fe_constraints_array,
+   'man1' => $fe_man1,
+   'man2' => $fe_man2,
+   'man3' => $fe_man3,
+   'man4' => $fe_man4,
+   'man5' => $fe_man5,
+   'com' => $fe_com,
+   'num_args' => $fe_num_args,	
+  
+   
+);
+
+$postvars = http_build_query($fields);
+
+// open connection
+$ch = curl_init();
+
+// set the url, number of POST vars, POST data
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_POST, count($fields));
+curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+
+// execute 
+$result = curl_exec($ch);
+
+// close 
+curl_close($ch);
+
+$be_data = json_decode($result,true);
+
+
+if($be_data[0][0]['error'] == 0){
+	if($be_data[0][0]['role'] == 't'){
+		header('Location: ALPHA_teacher.php');
+	}
+	else if($be_data[0][0]['role'] == 's'){
+		header('Location: ALPHA_student.php');
+	}
+	}
+	//else{
+		//header('Location: ALPHA_error.php');
+
+	
+//}
+else if(isset($fe_pass) && $be_data[0][0]['error'] == 1){
+	header('Location: ALPHA_error.php');
+}
+		
+else if($be_data[0][0]['error'] == 1){	
+	if(isset($fe_func_name)){
+		header('Location: create.php');
+}
+
+}
+
+if($be_data[0][0]['error'] == 1){	
+	if(isset($fe_exam_points)){
+		header('Location: ALPHA_teacher.php');
+}
+	//else{
+		//
+//}
+}
+
+if($be_data[0][0]['error'] == 1){	
+	if(isset($fe_answer_id)){
+		header('Location: ALPHA_student.php');
+}
+	//else{
+		//
+//}
+}
+
+if($be_data[0][0]['error'] == 1){	
+	if(isset($fe_com)){
+		header('Location: ALPHA_teacher.php');
+}
+	//else{
+		//
+//}
+}
+
+//else if($be_data[0][0]['error'] == 1){	
+	//header('Location: ALPHA_error.php');
+//}
+
+
+
+
+
+
+
+
+//print_r($be_data);
+//print_r($result);
+$copy = json_encode(array($be_data));
+//echo $be_data[0]['error'];
+
+//print_r("-------------------------------------------------------");
+
+
+$url = 'https://afsaccess1.njit.edu/~dmr56/ALPHA_teacher.php';
+$ch = curl_init($url);
+//print_r($be_data);
+//$data_string = json_encode(array($be_data));
+//print_r($data_string);
+//$senddata = '{name: "John", age: 31, city: "New York"}';
+//$senddata_string = json_encode($senddata);
+//$senddata = json_encode($be_data);
+//print_r($copy);
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $result);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+
+
+//print_r($result);
+echo $result;
+$result = curl_exec($ch);
+
+
+
+//curl_close($ch);
+
+//print_r("-------------------------------------------------------");
+
+
+//echo $copy;
+
+curl_close($ch);
+
+if(isset($fe_pass) && $be_data[0][0]['error'] == 1){
+	header('Location: ALPHA_error.php');
+}
+//echo $result;
+
+
+
+
+?>
+<?php
+/*
+if($be_data[0][0]['error'] == 0){
+	if($be_data[0][0]['role'] == 't'){
+		header('Location: ALPHA_teacher.php');
+	}
+	else{
+		header('Location: ALPHA_student.php');
+	}		
+	}
+else{
+		header('Location: ALPHA_error.php');
+}
+*/
+?>
